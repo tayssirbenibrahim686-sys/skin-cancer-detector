@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DermAI — Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue: #1a6efc;
+            --bg: #f4f7ff;
+            --white: #ffffff;
+            --text: #0d1b3e;
+            --muted: #7a8ba8;
+            --border: #e2e8f5;
+            --success: #00b894;
+            --danger: #e63757;
+            --cyan: #00b4d8;
+            --warning: #f59e0b;
+            --sidebar-w: 240px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: var(--bg);
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: var(--sidebar-w);
+            min-height: 100vh;
+            background: white;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0; left: 0;
+            z-index: 100;
+        }
+        .sidebar-brand {
+            padding: 1.4rem 1.4rem;
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .brand-icon {
+            width: 38px; height: 38px;
+            background: linear-gradient(135deg, var(--blue), var(--cyan));
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .brand-icon i { color: white; font-size: 1rem; }
+        .brand-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            color: var(--text);
+        }
+        .brand-name span { color: var(--blue); }
+
+        .nav-group-label {
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--muted);
+            padding: 1.1rem 1.4rem 0.4rem;
+            font-weight: 600;
+        }
+        .nav-link-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 1.4rem;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.15s;
+            position: relative;
+        }
+        .nav-link-item i { width: 18px; text-align: center; font-size: 0.9rem; }
+        .nav-link-item:hover { color: var(--blue); background: #f0f5ff; }
+        .nav-link-item.active {
+            color: var(--blue);
+            background: #eef2ff;
+            font-weight: 600;
+        }
+        .nav-link-item.active::before {
+            content: '';
+            position: absolute; left: 0; top: 0; bottom: 0;
+            width: 3px; background: var(--blue);
+            border-radius: 0 2px 2px 0;
+        }
+        .nav-badge {
+            margin-left: auto;
+            background: var(--danger);
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 1px 6px;
+            border-radius: 10px;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 1rem 1.4rem;
+            border-top: 1px solid var(--border);
+        }
+        .user-row {
+            display: flex; align-items: center; gap: 9px;
+            margin-bottom: 10px;
+        }
+        .user-avatar {
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue), var(--cyan));
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 0.78rem; font-weight: 600;
+        }
+        .user-name { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+        .user-role { font-size: 0.7rem; color: var(--muted); }
+        .logout-link {
+            display: flex; align-items: center; gap: 7px;
+            color: var(--danger);
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-decoration: none;
+            padding: 7px 10px;
+            border-radius: 8px;
+            background: #fff5f7;
+            transition: background 0.15s;
+        }
+        .logout-link:hover { background: #ffe0e6; color: var(--danger); }
+
+        /* MAIN */
+        .main-content {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* TOPBAR */
+        .topbar {
+            background: white;
+            border-bottom: 1px solid var(--border);
+            padding: 0 1.8rem;
+            height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 50;
+        }
+        .topbar-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            color: var(--text);
+        }
+        .topbar-date { font-size: 0.8rem; color: var(--muted); }
+        .btn-new {
+            display: flex; align-items: center; gap: 7px;
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: 9px;
+            padding: 8px 16px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            font-family: 'DM Sans', sans-serif;
+            transition: background 0.15s;
+        }
+        .btn-new:hover { background: #0f5ae0; color: white; }
+
+        /* PAGE */
+        .page-body { padding: 1.6rem 1.8rem; flex: 1; }
+
+        /* STAT CARDS */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 1.8rem;
+        }
+        .stat-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.2rem;
+            display: flex; align-items: center; gap: 14px;
+        }
+        .stat-icon {
+            width: 42px; height: 42px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .si-blue  { background: #eef2ff; color: var(--blue); }
+        .si-green { background: #e6faf4; color: var(--success); }
+        .si-red   { background: #fff0f3; color: var(--danger); }
+        .si-amber { background: #fffbeb; color: var(--warning); }
+        .stat-val { font-size: 1.7rem; font-weight: 700; color: var(--text); line-height: 1; }
+        .stat-lbl { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+
+        /* TWO COL */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* CARD */
+        .card-box {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .card-head {
+            padding: 1rem 1.3rem;
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .card-head-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .link-small {
+            font-size: 0.8rem;
+            color: var(--blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* TABLE */
+        .tbl { width: 100%; border-collapse: collapse; }
+        .tbl thead th {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: var(--muted);
+            font-weight: 600;
+            padding: 9px 14px;
+            background: #f9faff;
+            border-bottom: 1px solid var(--border);
+        }
+        .tbl tbody td {
+            padding: 11px 14px;
+            font-size: 0.85rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+        .tbl tbody tr:last-child td { border-bottom: none; }
+        .tbl tbody tr:hover { background: #f9faff; }
+
+        .patient-cell { display: flex; align-items: center; gap: 8px; }
+        .av {
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.7rem; font-weight: 700; flex-shrink: 0;
+        }
+        .av-b { background: #eef2ff; color: var(--blue); }
+        .av-g { background: #e6faf4; color: var(--success); }
+        .av-r { background: #fff0f3; color: var(--danger); }
+        .av-a { background: #fffbeb; color: var(--warning); }
+        .p-name { font-weight: 600; font-size: 0.85rem; }
+        .p-id   { font-size: 0.7rem; color: var(--muted); }
+
+        .badge {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 3px 9px;
+            border-radius: 5px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-b { background: #e6faf4; color: var(--success); }
+        .badge-m { background: #fff0f3; color: var(--danger); }
+        .badge-p { background: #fffbeb; color: var(--warning); }
+
+        /* ACTIVITY */
+        .activity-list { display: flex; flex-direction: column; }
+        .act-item {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 11px 1.3rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.84rem;
+        }
+        .act-item:last-child { border-bottom: none; }
+        .act-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            margin-top: 5px; flex-shrink: 0;
+        }
+        .act-text { flex: 1; line-height: 1.5; color: var(--text); }
+        .act-text strong { font-weight: 600; }
+        .act-time { font-size: 0.72rem; color: var(--muted); white-space: nowrap; padding-top: 2px; }
+    </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <div class="sidebar-brand">
+        <div class="brand-icon"><i class="fa-solid fa-microscope"></i></div>
+        <div class="brand-name">Derm<span>AI</span></div>
+    </div>
+
+    <div class="nav-group-label">Menu</div>
+    <a href="/dashboard" class="nav-link-item active">
+        <i class="fa-solid fa-house"></i> Tableau de bord
+    </a>
+    <a href="/predict" class="nav-link-item">
+        <i class="fa-solid fa-magnifying-glass"></i> Nouvelle analyse
+    </a>
+    <a href="/patients" class="nav-link-item">
+        <i class="fa-solid fa-users"></i> Patients
+        <span class="nav-badge">3</span>
+    </a>
+    <a href="#" class="nav-link-item">
+        <i class="fa-solid fa-file-medical"></i> Résultats
+    </a>
+    <a href="#" class="nav-link-item">
+        <i class="fa-solid fa-gear"></i> Paramètres
+    </a>
+
+    <div class="sidebar-footer">
+        <div class="user-row">
+            <div class="user-avatar">Dr</div>
+            <div>
+                <div class="user-name">Dr. Martin</div>
+                <div class="user-role">Dermatologue</div>
+            </div>
+        </div>
+        <a href="/logout" class="logout-link">
+            <i class="fa-solid fa-right-from-bracket"></i> Se déconnecter
+        </a>
+    </div>
+</div>
+
+<!-- MAIN -->
+<div class="main-content">
+
+    <div class="topbar">
+        <div>
+            <div class="topbar-title">Tableau de bord</div>
+            <div class="topbar-date">30 mai 2025 — Bienvenue, Dr. Martin</div>
+        </div>
+        <a href="/predict" class="btn-new">
+            <i class="fa-solid fa-plus"></i> Nouvelle analyse
+        </a>
+    </div>
+
+    <div class="page-body">
+
+        <!-- Stats -->
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-icon si-blue"><i class="fa-solid fa-microscope"></i></div>
+                <div>
+                    <div class="stat-val">248</div>
+                    <div class="stat-lbl">Analyses totales</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon si-green"><i class="fa-solid fa-circle-check"></i></div>
+                <div>
+                    <div class="stat-val">194</div>
+                    <div class="stat-lbl">Lésions bénignes</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon si-red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div>
+                    <div class="stat-val">54</div>
+                    <div class="stat-lbl">Cas malins</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon si-amber"><i class="fa-solid fa-users"></i></div>
+                <div>
+                    <div class="stat-val">87</div>
+                    <div class="stat-lbl">Patients suivis</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Two col -->
+        <div class="two-col">
+
+            <!-- Analyses récentes -->
+            <div class="card-box">
+                <div class="card-head">
+                    <div class="card-head-title">Analyses récentes</div>
+                    <a href="/patients" class="link-small">Voir tout →</a>
+                </div>
+                <table class="tbl">
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Résultat</th>
+                            <th>Confiance</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="patient-cell">
+                                    <div class="av av-r">AS</div>
+                                    <div><div class="p-name">Amira Seddik</div><div class="p-id">#P-0042</div></div>
+                                </div>
+                            </td>
+                            <td><span class="badge badge-m"><i class="fa-solid fa-circle-exclamation"></i> Malin</span></td>
+                            <td style="color:var(--danger);font-weight:600;">91%</td>
+                            <td style="color:var(--muted);">Aujourd'hui</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="patient-cell">
+                                    <div class="av av-g">KM</div>
+                                    <div><div class="p-name">Karim Mansouri</div><div class="p-id">#P-0041</div></div>
+                                </div>
+                            </td>
+                            <td><span class="badge badge-b"><i class="fa-solid fa-circle-check"></i> Bénin</span></td>
+                            <td style="color:var(--success);font-weight:600;">96%</td>
+                            <td style="color:var(--muted);">Hier</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="patient-cell">
+                                    <div class="av av-a">SB</div>
+                                    <div><div class="p-name">Sara Belhaj</div><div class="p-id">#P-0040</div></div>
+                                </div>
+                            </td>
+                            <td><span class="badge badge-p"><i class="fa-solid fa-clock"></i> En attente</span></td>
+                            <td style="color:var(--warning);font-weight:600;">72%</td>
+                            <td style="color:var(--muted);">28 mai</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="patient-cell">
+                                    <div class="av av-b">RM</div>
+                                    <div><div class="p-name">Riad Messaoud</div><div class="p-id">#P-0039</div></div>
+                                </div>
+                            </td>
+                            <td><span class="badge badge-b"><i class="fa-solid fa-circle-check"></i> Bénin</span></td>
+                            <td style="color:var(--success);font-weight:600;">88%</td>
+                            <td style="color:var(--muted);">27 mai</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Activité -->
+            <div class="card-box">
+                <div class="card-head">
+                    <div class="card-head-title">Activité récente</div>
+                </div>
+                <div class="activity-list">
+                    <div class="act-item">
+                        <div class="act-dot" style="background:var(--danger)"></div>
+                        <div class="act-text"><strong>Cas malin détecté</strong> — Amira Seddik, mélanome à 91%</div>
+                        <div class="act-time">12 min</div>
+                    </div>
+                    <div class="act-item">
+                        <div class="act-dot" style="background:var(--success)"></div>
+                        <div class="act-text"><strong>Analyse complétée</strong> — Karim Mansouri, bénin confirmé</div>
+                        <div class="act-time">Hier</div>
+                    </div>
+                    <div class="act-item">
+                        <div class="act-dot" style="background:var(--blue)"></div>
+                        <div class="act-text"><strong>Nouveau patient</strong> — Sara Belhaj ajoutée (#P-0040)</div>
+                        <div class="act-time">28 mai</div>
+                    </div>
+                    <div class="act-item">
+                        <div class="act-dot" style="background:var(--warning)"></div>
+                        <div class="act-text"><strong>Rapport généré</strong> — Riad Messaoud, kératose</div>
+                        <div class="act-time">27 mai</div>
+                    </div>
+                    <div class="act-item">
+                        <div class="act-dot" style="background:var(--danger)"></div>
+                        <div class="act-text"><strong>Alerte urgente</strong> — Nadia Aït-Ali, mélanome à 85%</div>
+                        <div class="act-time">26 mai</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

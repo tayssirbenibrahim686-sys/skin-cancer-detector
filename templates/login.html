@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DermAI — Connexion</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue: #1a6efc;
+            --blue-dark: #0f4ecc;
+            --blue-light: #e8f0fe;
+            --bg: #f2f6ff;
+            --white: #ffffff;
+            --text: #0d1b3e;
+            --muted: #7a8ba8;
+            --border: #dde6f5;
+            --success: #00b894;
+            --cyan: #00b4d8;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: var(--bg);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        .bg-blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.18;
+            animation: blobFloat 8s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .blob1 { width: 500px; height: 500px; background: #1a6efc; top: -150px; left: -150px; animation-delay: 0s; }
+        .blob2 { width: 400px; height: 400px; background: #00b4d8; bottom: -100px; right: -100px; animation-delay: 3s; }
+        .blob3 { width: 300px; height: 300px; background: #48cae4; top: 40%; left: 40%; animation-delay: 5s; }
+        @keyframes blobFloat {
+            0%, 100% { transform: translate(0,0) scale(1); }
+            33% { transform: translate(20px,-20px) scale(1.05); }
+            66% { transform: translate(-15px,15px) scale(0.97); }
+        }
+        .grid-overlay {
+            position: fixed; inset: 0;
+            background-image: linear-gradient(rgba(26,110,252,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(26,110,252,0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0; pointer-events: none;
+        }
+
+        .page-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: stretch;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── LEFT PANEL ── */
+        .left-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 3rem 3rem 3rem 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .left-panel::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(26,110,252,0.06) 0%, transparent 60%);
+        }
+
+        .brand {
+            display: flex; align-items: center; gap: 14px;
+            margin-bottom: 3rem;
+        }
+        .brand-icon {
+            width: 54px; height: 54px;
+            background: linear-gradient(135deg, var(--blue), #00b4d8);
+            border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 24px rgba(26,110,252,0.35);
+        }
+        .brand-icon i { color: white; font-size: 1.5rem; }
+        .brand-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.9rem;
+            color: var(--text);
+        }
+        .brand-name span { color: var(--blue); }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.2rem;
+            color: var(--text);
+            line-height: 1.15;
+            margin-bottom: 1.2rem;
+            letter-spacing: -1.5px;
+        }
+        .hero-title span {
+            background: linear-gradient(135deg, var(--blue), #00b4d8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-sub {
+            color: var(--muted);
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+            max-width: 420px;
+        }
+
+        /* Stats */
+        .stats-row { display: flex; gap: 2.5rem; margin-bottom: 2.5rem; }
+        .stat-number {
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1;
+        }
+        .stat-number span { color: var(--blue); }
+        .stat-label {
+            font-size: 0.78rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-top: 5px;
+        }
+
+        /* Feature pills */
+        .features-list { display: flex; flex-direction: column; gap: 12px; }
+        .feature-pill {
+            display: inline-flex; align-items: center; gap: 12px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 11px 20px;
+            font-size: 0.92rem;
+            color: var(--text);
+            width: fit-content;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            animation: pillSlide 0.6s ease both;
+        }
+        .feature-pill:nth-child(1) { animation-delay: 0.3s; }
+        .feature-pill:nth-child(2) { animation-delay: 0.45s; }
+        .feature-pill:nth-child(3) { animation-delay: 0.6s; }
+        @keyframes pillSlide {
+            from { opacity: 0; transform: translateX(-20px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+        .pill-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--blue); flex-shrink: 0; }
+        .pill-dot.green { background: var(--success); }
+        .pill-dot.cyan  { background: #00b4d8; }
+
+        /* ── DNA HELIX ANIMATION ── */
+        .dna-wrap {
+            position: absolute;
+            bottom: 2rem;
+            right: 2rem;
+            width: 180px;
+            height: 220px;
+            overflow: hidden;
+        }
+        .dna-canvas {
+            width: 180px;
+            height: 220px;
+        }
+        .dna-label {
+            position: absolute;
+            bottom: -6px; left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.68rem;
+            color: var(--blue);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            white-space: nowrap;
+            font-weight: 600;
+            animation: blink 2.5s ease-in-out infinite;
+        }
+        @keyframes blink { 0%,100%{opacity:0.5} 50%{opacity:1} }
+
+        /* Floating result cards */
+        .floating-cards {
+            position: absolute;
+            bottom: 1.5rem;
+            right: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 200px;
+        }
+        .result-card {
+            background: white;
+            border-radius: 14px;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(26,110,252,0.10);
+            animation: cardFloat 4s ease-in-out infinite;
+        }
+        .result-card:nth-child(2) { animation-delay: 1.5s; }
+        @keyframes cardFloat {
+            0%,100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+        .card-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+        .card-result {
+            font-size: 1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .badge-benign {
+            background: #e6faf4;
+            color: #00b894;
+            border-radius: 6px;
+            padding: 2px 8px;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+        .badge-malignant {
+            background: #fff0f3;
+            color: #c9184a;
+            border-radius: 6px;
+            padding: 2px 8px;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+        .confidence-bar-wrap {
+            margin-top: 6px;
+            background: #f0f4ff;
+            border-radius: 4px;
+            height: 5px;
+            overflow: hidden;
+        }
+        .confidence-bar {
+            height: 100%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--blue), var(--cyan));
+            animation: fillBar 2s ease-in-out infinite alternate;
+        }
+        @keyframes fillBar {
+            from { width: 60%; }
+            to   { width: 96%; }
+        }
+        .confidence-bar.red {
+            background: linear-gradient(90deg, #ff4d6d, #c9184a);
+            animation: fillBarRed 2s ease-in-out infinite alternate;
+        }
+        @keyframes fillBarRed {
+            from { width: 55%; }
+            to   { width: 88%; }
+        }
+        .conf-text {
+            font-size: 0.72rem;
+            color: var(--muted);
+            margin-top: 4px;
+            text-align: right;
+        }
+
+        /* Skin cell dots decoration */
+        .cell-dots {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+        .cell-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: rgba(26,110,252,0.15);
+            animation: cellPulse 3s ease-in-out infinite;
+        }
+        .cell-dot:nth-child(2n) { background: rgba(0,180,216,0.15); animation-delay: 0.5s; }
+        .cell-dot:nth-child(3n) { background: rgba(0,184,148,0.15); animation-delay: 1s; }
+        @keyframes cellPulse {
+            0%,100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.5); opacity: 1; }
+        }
+
+        /* ── RIGHT PANEL ── */
+        .right-panel {
+            width: 42%;
+            flex-shrink: 0;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 3rem 3.5rem;
+            box-shadow: -12px 0 60px rgba(26,110,252,0.10);
+            position: relative;
+            overflow: hidden;
+            animation: panelIn 0.6s cubic-bezier(0.16,1,0.3,1) both;
+            border-left: 1px solid rgba(26,110,252,0.07);
+        }
+        @keyframes panelIn {
+            from { opacity:0; transform:translateX(30px); }
+            to   { opacity:1; transform:translateX(0); }
+        }
+        .right-panel::before {
+            content: '';
+            position: absolute; top:0; left:0; right:0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--blue), #00b4d8, #48cae4);
+        }
+
+        /* Soft tinted bg for right panel */
+        .right-panel-inner {
+            position: relative;
+            z-index: 1;
+            max-width: 400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Decorative circle in right panel bg */
+        .right-panel::after {
+            content: '';
+            position: absolute;
+            width: 320px; height: 320px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(26,110,252,0.05), transparent 70%);
+            bottom: -80px; right: -80px;
+            pointer-events: none;
+        }
+
+        .form-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--text);
+            margin-bottom: 0.4rem;
+            letter-spacing: -0.5px;
+        }
+        .form-title::after {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--blue), var(--cyan));
+            border-radius: 2px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .form-sub { color: var(--muted); font-size: 1rem; margin-bottom: 2.5rem; }
+
+        /* Trust badges top of form */
+        .trust-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 2rem;
+        }
+        .trust-badge {
+            display: flex; align-items: center; gap: 6px;
+            background: #f6f9ff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 0.78rem;
+            color: var(--muted);
+            font-weight: 500;
+        }
+        .trust-badge i { font-size: 0.8rem; color: var(--blue); }
+        .trust-badge.green i { color: var(--success); }
+
+        /* Alert */
+        .alert-custom {
+            border-radius: 10px; padding: 0.75rem 1rem;
+            font-size: 0.9rem; margin-bottom: 1.2rem;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .alert-danger  { background:#fff0f3; color:#c9184a; border:1px solid #ffb3c1; }
+        .alert-success { background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0; }
+        .alert-warning { background:#fffbeb; color:#92400e; border:1px solid #fde68a; }
+
+        /* Fields */
+        .field-group { margin-bottom: 1.4rem; }
+        .field-label {
+            display: block;
+            font-size: 0.78rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.7px;
+            color: var(--muted); margin-bottom: 8px;
+        }
+        .field-wrap { position: relative; }
+        .field-icon {
+            position: absolute; left: 15px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted); font-size: 1rem;
+            transition: color 0.2s; z-index: 2;
+        }
+        .field-input {
+            width: 100%;
+            padding: 15px 48px 15px 46px;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            color: var(--text);
+            background: #fafcff;
+            transition: all 0.2s; outline: none;
+        }
+        .field-input::placeholder { color: #b0bdd4; }
+        .field-input:focus {
+            border-color: var(--blue);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(26,110,252,0.1);
+        }
+        .field-wrap:focus-within .field-icon { color: var(--blue); }
+        .toggle-eye {
+            position: absolute; right: 14px; top: 50%;
+            transform: translateY(-50%);
+            background: none; border: none;
+            color: var(--muted); cursor: pointer;
+            padding: 4px; transition: color 0.2s; z-index: 2;
+            font-size: 1rem;
+        }
+        .toggle-eye:hover { color: var(--blue); }
+
+        /* Strength */
+        .strength-bar { display:flex; gap:4px; margin-top:8px; height:3px; }
+        .strength-seg { flex:1; border-radius:2px; background:var(--border); transition:background 0.3s; }
+        .active-weak   { background:#ff4d6d; }
+        .active-medium { background:#f59e0b; }
+        .active-strong { background:var(--success); }
+
+        /* Submit */
+        .btn-submit {
+            width: 100%; padding: 16px;
+            background: linear-gradient(135deg, var(--blue), #00b4d8);
+            border: none; border-radius: 12px;
+            color: white;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.05rem; font-weight: 600;
+            cursor: pointer; position: relative; overflow: hidden;
+            transition: all 0.25s;
+            box-shadow: 0 6px 20px rgba(26,110,252,0.4);
+            margin-top: 0.5rem;
+        }
+        .btn-submit::after {
+            content: ''; position: absolute;
+            top:0; left:-100%; width:100%; height:100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        .btn-submit:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(26,110,252,0.5); }
+        .btn-submit:hover::after { left:100%; }
+        .btn-submit:active { transform:translateY(0); }
+        .btn-submit.loading { pointer-events:none; opacity:0.85; }
+        .spinner {
+            display:inline-block; width:16px; height:16px;
+            border:2px solid rgba(255,255,255,0.4);
+            border-top-color:white; border-radius:50%;
+            animation:spin 0.7s linear infinite;
+            vertical-align:middle; margin-right:8px;
+        }
+        @keyframes spin { to { transform:rotate(360deg); } }
+
+        .or-divider {
+            display:flex; align-items:center; gap:12px;
+            color:var(--muted); font-size:0.85rem; margin:1.4rem 0;
+        }
+        .or-divider::before, .or-divider::after { content:''; flex:1; height:1px; background:var(--border); }
+        .register-row { text-align:center; font-size:0.92rem; color:var(--muted); margin-top:1rem; }
+        .register-row a { color:var(--blue); font-weight:600; text-decoration:none; border-bottom:1.5px solid transparent; transition:border-color 0.2s; }
+        .register-row a:hover { border-color:var(--blue); }
+        .security-badge {
+            display:flex; align-items:center; gap:6px;
+            font-size:0.78rem; color:var(--muted);
+            margin-top:1.5rem; justify-content:center;
+        }
+        .security-badge i { color:var(--success); }
+    </style>
+</head>
+<body>
+
+<div class="bg-blob blob1"></div>
+<div class="bg-blob blob2"></div>
+<div class="bg-blob blob3"></div>
+<div class="grid-overlay"></div>
+
+<div class="page-wrapper">
+
+    <!-- LEFT -->
+    <div class="left-panel">
+
+        <!-- Decorative dots grid -->
+        <div class="cell-dots">
+            <div class="cell-dot"></div><div class="cell-dot"></div><div class="cell-dot"></div><div class="cell-dot"></div><div class="cell-dot"></div>
+            <div class="cell-dot"></div><div class="cell-dot"></div><div class="cell-dot"></div><div class="cell-dot"></div><div class="cell-dot"></div>
+            <div class="cell-dot"></div><div class="cell-dot"></div><div class="cell-dot"></div><div class="cell-dot"></div><div class="cell-dot"></div>
+        </div>
+
+        <div class="brand">
+            <div class="brand-icon"><i class="fa-solid fa-microscope"></i></div>
+            <div class="brand-name">Derm<span>AI</span></div>
+        </div>
+
+        <h1 class="hero-title">
+            Diagnostic cutané<br>
+            de précision<br>
+            <span>propulsé par l'IA</span>
+        </h1>
+
+        <p class="hero-sub">
+            Notre modèle VGG16 cliniquement validé détecte mélanomes, carcinomes et lésions bénignes avec une précision digne des meilleurs dermatologues — en moins de 2 secondes.
+        </p>
+
+        <div class="stats-row">
+            <div class="stat-item">
+                <div class="stat-number">97<span>%</span></div>
+                <div class="stat-label">Précision clinique</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">&lt;2<span>s</span></div>
+                <div class="stat-label">Par diagnostic</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">10<span>k+</span></div>
+                <div class="stat-label">Images analysées</div>
+            </div>
+        </div>
+
+        <div class="features-list">
+            <div class="feature-pill"><div class="pill-dot"></div>Détection Malin / Bénin avec score de confiance</div>
+            <div class="feature-pill"><div class="pill-dot green"></div>Rapport médical généré automatiquement</div>
+            <div class="feature-pill"><div class="pill-dot cyan"></div>Suivi longitudinal des patients en temps réel</div>
+        </div>
+
+        <!-- Floating AI result cards -->
+        <div class="floating-cards">
+            <div class="result-card">
+                <div class="card-label"><i class="fa-solid fa-circle-check" style="color:var(--success);margin-right:4px;"></i>Résultat IA</div>
+                <div class="card-result">
+                    Lésion&nbsp;<span class="badge-benign">Bénigne</span>
+                </div>
+                <div class="confidence-bar-wrap">
+                    <div class="confidence-bar"></div>
+                </div>
+                <div class="conf-text">Confiance : <strong style="color:var(--blue)">96%</strong></div>
+            </div>
+            <div class="result-card">
+                <div class="card-label"><i class="fa-solid fa-triangle-exclamation" style="color:#c9184a;margin-right:4px;"></i>Alerte détectée</div>
+                <div class="card-result">
+                    Lésion&nbsp;<span class="badge-malignant">Maligne</span>
+                </div>
+                <div class="confidence-bar-wrap">
+                    <div class="confidence-bar red"></div>
+                </div>
+                <div class="conf-text">Confiance : <strong style="color:#c9184a">88%</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right-panel">
+        <div class="right-panel-inner">
+        <div class="form-title">Bienvenue, Docteur</div>
+        <div class="form-sub">Accédez à votre espace de diagnostic médical sécurisé</div>
+
+        <div class="trust-row">
+            <div class="trust-badge"><i class="fa-solid fa-hospital"></i> Usage médical</div>
+            <div class="trust-badge green"><i class="fa-solid fa-shield-halved"></i> Données chiffrées</div>
+            <div class="trust-badge"><i class="fa-solid fa-user-doctor"></i> Validé cliniquement</div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for cat, msg in messages %}
+                <div class="alert-custom alert-{{ cat }}">
+                    <i class="fa-solid fa-{% if cat == 'danger' %}circle-exclamation{% elif cat == 'success' %}circle-check{% else %}triangle-exclamation{% endif %}"></i>
+                    {{ msg }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+        <form method="POST" id="loginForm" novalidate>
+            <div class="field-group">
+                <label class="field-label">Nom d'utilisateur</label>
+                <div class="field-wrap">
+                    <i class="fa-solid fa-user field-icon"></i>
+                    <input type="text" name="username" class="field-input"
+                           placeholder="Entrez votre identifiant médical" required autocomplete="username">
+                </div>
+            </div>
+
+            <div class="field-group">
+                <label class="field-label">Mot de passe</label>
+                <div class="field-wrap">
+                    <i class="fa-solid fa-lock field-icon"></i>
+                    <input type="password" name="password" id="pwInput" class="field-input"
+                           placeholder="Entrez votre mot de passe" required autocomplete="current-password"
+                           oninput="checkStrength(this.value)">
+                    <button type="button" class="toggle-eye" onclick="togglePw()">
+                        <i class="fa-solid fa-eye" id="eyeIcon"></i>
+                    </button>
+                </div>
+                <div class="strength-bar">
+                    <div class="strength-seg" id="s1"></div>
+                    <div class="strength-seg" id="s2"></div>
+                    <div class="strength-seg" id="s3"></div>
+                    <div class="strength-seg" id="s4"></div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">
+                <span id="btnContent">
+                    <i class="fa-solid fa-right-to-bracket" style="margin-right:8px;"></i>Accéder au tableau de bord
+                </span>
+            </button>
+        </form>
+
+        <div class="or-divider">ou</div>
+
+        <div class="register-row">
+            Nouveau praticien ? <a href="/register">Créer un compte médical</a>
+        </div>
+
+        <div class="security-badge">
+            <i class="fa-solid fa-shield-halved"></i>
+            Connexion chiffrée SSL — vos données patients sont protégées
+        </div>
+        </div><!-- /.right-panel-inner -->
+    </div>
+</div>
+
+<script>
+    function togglePw() {
+        const input = document.getElementById('pwInput');
+        const icon  = document.getElementById('eyeIcon');
+        input.type  = input.type === 'password' ? 'text' : 'password';
+        icon.classList.toggle('fa-eye');
+        icon.classList.toggle('fa-eye-slash');
+    }
+
+    function checkStrength(val) {
+        const segs = ['s1','s2','s3','s4'].map(id => document.getElementById(id));
+        segs.forEach(s => s.className = 'strength-seg');
+        if (!val) return;
+        let score = 0;
+        if (val.length >= 6) score++;
+        if (val.length >= 10) score++;
+        if (/[A-Z]/.test(val) && /[0-9]/.test(val)) score++;
+        if (/[^A-Za-z0-9]/.test(val)) score++;
+        const cls = score <= 1 ? 'active-weak' : score <= 2 ? 'active-medium' : 'active-strong';
+        for (let i = 0; i < score; i++) segs[i].classList.add(cls);
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', function() {
+        const btn = document.getElementById('submitBtn');
+        const content = document.getElementById('btnContent');
+        btn.classList.add('loading');
+        content.innerHTML = '<span class="spinner"></span>Connexion en cours...';
+    });
+</script>
+</body>
+</html>
